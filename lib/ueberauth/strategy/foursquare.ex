@@ -7,6 +7,8 @@ defmodule Ueberauth.Strategy.Foursquare do
                           oauth2_module: Ueberauth.Strategy.Foursquare.OAuth
 
   alias Ueberauth.Auth.Info
+  alias Ueberauth.Auth.Credentials
+  alias Ueberauth.Auth.Extra
 
   def handle_request!(conn) do
     opts = [
@@ -37,20 +39,63 @@ defmodule Ueberauth.Strategy.Foursquare do
     |> put_private(:foursquare_token, nil)
   end
 
+  @doc """
+  Includes the credentials from Foursquare response
+  """
+  def credentials(conn) do
+    token        = conn.private.foursquare_token
+
+    %Credentials{
+      token:         token.access_token,
+      refresh_token: token.refresh_token,
+      expires_at:    token.expires_at,
+      token_type:    token.token_type,
+      expires:       !!token.expires_at,
+      scopes:        []
+    }
+  end
+
+  @doc """
+  Fetches the fields to populate the info section of the `Ueberauth.Auth` struct
+  """
   def info(conn) do
     user = conn.private.foursquare_user
-
     %Info{
       name:        "#{user["firstName"]} #{user["lastName"]}",
       first_name:  user["firstName"],
       last_name:   user["lastName"],
-      email:       (user["contact"] || {})["email"],
-      phone:       (user["contact"] || {})["phone"],
+      email:       (user["contact"] || %{})["email"],
+      phone:       (user["contact"] || %{})["phone"],
       image:       user["photo"],
       location:    user["homeCity"],
       description: user["bio"]
     }
   end
+
+  @doc """
+  Stores the raw information (including the token) obtained from the Foursquare
+  """
+  def extra(conn) do
+    %Extra {
+      raw_info: %{
+        token: conn.private.foursquare_token,
+        user:  conn.private.foursquare_user
+      }
+    }
+  end
+
+  @doc """
+  Fetches the uid field from the response.
+  """
+  def uid(conn) do
+    uid_field =
+      conn
+      |> option(:uid_field)
+      |> to_string
+
+    conn.private.foursquare_user[uid_field]
+  end
+
 
   defp option(conn, key) do
     default_value = default_options() |> Keyword.get(key)

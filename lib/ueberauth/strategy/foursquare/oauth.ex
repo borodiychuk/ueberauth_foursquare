@@ -33,8 +33,7 @@ defmodule Ueberauth.Strategy.Foursquare.OAuth do
   end
 
   def get(token, url, headers \\ [], opts \\ []) do
-    client
-    |> OAuth2.Client.get(url, headers, opts)
+    OAuth2.Client.get(client, url, headers, opts)
   end
 
 
