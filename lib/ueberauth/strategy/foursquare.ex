@@ -2,6 +2,52 @@ defmodule Ueberauth.Strategy.Foursquare do
 
   @moduledoc """
   Foursquare Strategy for Überauth.
+
+  ### Setup
+
+  Create an application in Foursquare for you to use.
+
+  Register a new application at: [foursquare developer page](https://developer.foursquare.com/) and get the `client_id` and `client_secret`.
+
+  Include the provider in your configuration for Ueberauth
+
+      config :ueberauth, Ueberauth,
+        providers: [
+          foursquare: { Ueberauth.Strategy.Foursquare, [] }
+        ]
+
+  Then include the configuration for Foursquare.
+
+      config :ueberauth, Ueberauth.Strategy.Foursquare.OAuth,
+        client_id:     System.get_env("FOURSQUARE_CLIENT_ID"),
+        client_secret: System.get_env("FOURSQUARE_CLIENT_SECRET")
+
+  If you haven't already, create a pipeline and setup routes for your callback handler
+
+      pipeline :auth do
+        Ueberauth.plug "/auth"
+      end
+
+      scope "/auth" do
+        pipe_through [:browser, :auth]
+
+        get "/:provider/callback", AuthController, :callback
+      end
+
+
+  Create an endpoint for the callback where you will handle the `Ueberauth.Auth` struct
+
+      defmodule MyApp.AuthController do
+        use MyApp.Web, :controller
+
+        def callback_phase(%{ assigns: %{ ueberauth_failure: fails } } = conn, _params) do
+          # do things with the failure
+        end
+
+        def callback_phase(%{ assigns: %{ ueberauth_auth: auth } } = conn, params) do
+          # do things with the auth
+        end
+      end
   """
   use Ueberauth.Strategy, uid_field: :id,
                           oauth2_module: Ueberauth.Strategy.Foursquare.OAuth
@@ -10,6 +56,9 @@ defmodule Ueberauth.Strategy.Foursquare do
   alias Ueberauth.Auth.Credentials
   alias Ueberauth.Auth.Extra
 
+  @doc """
+  Handles the initial redirect to the Foursquare authentication page
+  """
   def handle_request!(conn) do
     opts = [
       redirect_uri: callback_url(conn)
@@ -18,6 +67,10 @@ defmodule Ueberauth.Strategy.Foursquare do
     redirect!(conn, apply(module, :authorize_url!, [opts]))
   end
 
+  @doc """
+  Handles the callback from Foursquare. When there is a failure from Foursquare the failure is included in the
+  `ueberauth_failure` struct. Otherwise the information returned from Foursquare is returned in the `Ueberauth.Auth` struct
+  """
   def handle_callback!(%Plug.Conn{params: %{"code" => code}} = conn) do
     module = option(conn, :oauth2_module)
     token = apply(module, :get_token!, [[code: code], [redirect_uri: callback_url(conn)]])
@@ -33,6 +86,9 @@ defmodule Ueberauth.Strategy.Foursquare do
     set_errors!(conn, [error("missing_code", "No code received")])
   end
 
+  @doc """
+  Cleans up the private area of the connection used for passing the raw Foursquare response around during the callback
+  """
   def handle_cleanup!(conn) do
     conn
     |> put_private(:foursquare_user, nil)
@@ -85,7 +141,7 @@ defmodule Ueberauth.Strategy.Foursquare do
   end
 
   @doc """
-  Fetches the uid field from the response.
+  Fetches the uid field from the response
   """
   def uid(conn) do
     uid_field =
