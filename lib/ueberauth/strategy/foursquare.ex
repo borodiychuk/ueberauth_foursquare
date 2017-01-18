@@ -104,10 +104,13 @@ defmodule Ueberauth.Strategy.Foursquare do
 
   defp fetch_user(conn, token) do
     conn = put_private(conn, :foursquare_token, token)
-    path = "https://api.foursquare.com/v2/users/self?oauth_token=#{token.access_token}&v=20170115"
-    module = option(conn, :oauth2_module)
-    resp = apply(module, :get, [token, path])
-    case resp do
+    response = OAuth2.Client.get(
+      OAuth2.Client.new([]),
+      "https://api.foursquare.com/v2/users/self",
+      [],
+      params: %{v: 20170115, oauth_token: token.access_token}
+    )
+    case response do
       {:ok, %OAuth2.Response{status_code: 401, body: _body}} ->
         set_errors!(conn, [error("token", "unauthorized")])
       {:ok, %OAuth2.Response{status_code: status_code, body: body}}

@@ -1,7 +1,7 @@
 defmodule UeberauthFoursquare.Mixfile do
   use Mix.Project
 
-  @version    "0.1.1"
+  @version    "0.1.2"
   @github_url "https://github.com/borodiychuk/ueberauth_foursquare"
 
   def project do
@@ -39,7 +39,7 @@ defmodule UeberauthFoursquare.Mixfile do
   end
 
   defp description do
-    "An Ueberauth strategy for using Foursquare to authenticate users."
+    "An Überauth strategy for using Foursquare to authenticate users"
   end
 
   defp package do
