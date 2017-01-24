@@ -29,8 +29,9 @@ defmodule UeberauthFoursquare.Mixfile do
       {:oauth2,    "~> 0.8"},
       {:ueberauth, "~> 0.4"},
       {:credo,     "~> 0.5",   only: [:dev, :test]},
-      {:earmark,   "~> 0.2",   only: :dev},
-      {:ex_doc,    ">= 0.0.0", only: :dev}
+      {:earmark,   "~> 1.1",   only: :dev},
+      {:ex_doc,    ">= 0.0.0", only: :dev},
+      {:inch_ex,               only: :docs}
     ]
   end
 
