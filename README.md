@@ -2,7 +2,7 @@
 
 Foursquare OAuth2 strategy for Überauth.
 
-[![Build Status](https://travis-ci.org/borodiychuk/ueberauth_foursquare.svg?branch=master)](https://travis-ci.org/borodiychuk/ueberauth_foursquare) [![Deps Status](https://beta.hexfaktor.org/badge/all/github/borodiychuk/ueberauth_foursquare.svg)](https://beta.hexfaktor.org/github/borodiychuk/ueberauth_foursquare)
+[![Build Status](https://travis-ci.org/borodiychuk/ueberauth_foursquare.svg?branch=master)](https://travis-ci.org/borodiychuk/ueberauth_foursquare) [![Deps Status](https://beta.hexfaktor.org/badge/all/github/borodiychuk/ueberauth_foursquare.svg)](https://beta.hexfaktor.org/github/borodiychuk/ueberauth_foursquare) [![Code Climate](https://codeclimate.com/github/borodiychuk/ueberauth_foursquare/badges/gpa.svg)](https://codeclimate.com/github/borodiychuk/ueberauth_foursquare)
 
 
 ## Installation
