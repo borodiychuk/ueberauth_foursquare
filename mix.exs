@@ -31,7 +31,7 @@ defmodule UeberauthFoursquare.Mixfile do
       {:credo,     "~> 0.5",   only: [:dev, :test]},
       {:earmark,   "~> 1.1",   only: :dev},
       {:ex_doc,    ">= 0.0.0", only: :dev},
-      {:inch_ex,               only: :docs}
+      {:inch_ex,   ">= 0.0.0",  only: :docs}
     ]
   end
 
