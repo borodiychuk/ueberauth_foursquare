@@ -1,6 +1,9 @@
 # Überauth Foursquare
 
-> Foursquare OAuth2 strategy for Überauth.
+Foursquare OAuth2 strategy for Überauth.
+
+[![Deps Status](https://beta.hexfaktor.org/badge/all/github/borodiychuk/ueberauth_foursquare.svg)](https://beta.hexfaktor.org/github/borodiychuk/ueberauth_foursquare)
+
 
 ## Installation
 
